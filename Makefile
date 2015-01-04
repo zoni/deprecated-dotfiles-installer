@@ -12,5 +12,5 @@ setup:
 
 install:
 	@$(ANSIBLE_PLAYBOOK) stage1.yml || $(ON_FAILURE)
-	@for repo in $$(cat .repo-names); do $(ANSIBLE_PLAYBOOK) --extra-vars dotfiles="repos/$${repo}" stage2.yml || $(ON_FAILURE); done
+	@for repo in $$(cat .repo-names); do echo "==> Running $${repo}" && $(ANSIBLE_PLAYBOOK) --extra-vars dotfiles="repos/$${repo}" stage2.yml || $(ON_FAILURE); done
 	@$(RM_SUDO_PASS)
