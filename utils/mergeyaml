@@ -8,7 +8,10 @@ from copy import deepcopy
 
 def merge(a, b):
     if type(a) != type(b):
-        return deepcopy(b)
+        raise ValueError("Trying to merge two different types of data")
+
+    if isinstance(b, str):
+        return a + b
 
     result = deepcopy(a)
     if isinstance(b, list):
@@ -27,8 +30,10 @@ if __name__ == "__main__":
     parser.add_argument("file", nargs='+', help="YAML file(s) to merge")
     args = parser.parse_args()
 
-    result = ""
+    result = {}
     for file in args.file:
         data = yaml.safe_load(open(file, 'r'))
+        if data is None:
+            data = {}
         result = merge(result, data)
     yaml.dump(result, sys.stdout)

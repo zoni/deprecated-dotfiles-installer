@@ -16,6 +16,16 @@ def test_shallow_dict_merge():
     }
     assert mergeyaml.merge(a, b) == expected
 
+    a = {
+        'one': [1, 2, 3]
+    }
+    b = {}
+
+    expected = {
+        'one': [1, 2, 3],
+    }
+    assert mergeyaml.merge(a, b) == expected
+
 
 def test_deep_dict_merge():
     a = {
@@ -58,38 +68,20 @@ def test_list_merge():
     expected = [1, 2, 3]
     assert mergeyaml.merge(a, b) == expected
 
+    a = [1, 2]
+    b = []
+    expected = [1, 2]
+    assert mergeyaml.merge(a, b) == expected
+
+
+def test_str_merge():
+    a = "some"
+    b = "string"
+    assert mergeyaml.merge(a, b) == a + b
+
 
 def test_different_types_merge():
     a = {}
     b = [1]
-    assert mergeyaml.merge(a, b) == [1]
-
-    a = []
-    b = {'one': 1}
-    assert mergeyaml.merge(a, b) == {'one': 1}
-
-    a = []
-    b = ""
-    assert mergeyaml.merge(a, b) == ""
-
-    a = {
-        'one': {'two': {'three': [3]}}
-    }
-    b = {
-        'one': {'two': {'three': ["three"]}}
-    }
-    expected = {
-        'one': {'two': {'three': [3, "three"]}}
-    }
-    assert mergeyaml.merge(a, b) == expected
-
-    a = {
-        'one': {'two': {'three': [3]}}
-    }
-    b = {
-        'one': {'two': {'three': "three"}}
-    }
-    expected = {
-        'one': {'two': {'three': "three"}}
-    }
-    assert mergeyaml.merge(a, b) == expected
+    with pytest.raises(ValueError):
+        assert mergeyaml.merge(a, b)
