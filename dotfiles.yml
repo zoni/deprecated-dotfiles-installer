@@ -1,0 +1,14 @@
+- name: Template files
+  template:
+    src: "{{ dotfiles }}/{{ item.src }}"
+    dest: "{{ ENV.HOME }}/{{ item.dest }}"
+  with_items: TASKS.TEMPLATE|default([])
+
+- name: Copy files
+  synchronize:
+    archive: yes
+    compress: no
+    delete: "{{ item.delete|default('no') }}"
+    src: "{{ dotfiles }}/{{ item.src }}"
+    dest: "{{ ENV.HOME }}/{{ item.dest|default('') }}"
+  with_items: TASKS.COPY|default([])

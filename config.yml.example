@@ -1,0 +1,6 @@
+SUDO: yes
+
+REPOS:
+  - name: public
+    repo: "git@github.com:YOUR_GITHUB_USERNAME/dotfiles"
+    version: HEAD

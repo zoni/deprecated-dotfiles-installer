@@ -1,0 +1,34 @@
+#!/usr/bin/env python
+
+import argparse
+import sys
+import yaml
+from copy import deepcopy
+
+
+def merge(a, b):
+    if type(a) != type(b):
+        return deepcopy(b)
+
+    result = deepcopy(a)
+    if isinstance(b, list):
+        result = list(set(a + b))
+    else:
+        for k, v in b.iteritems():
+            if k in result:
+                result[k] = merge(result[k], v)
+            else:
+                result[k] = deepcopy(v)
+    return result
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Merge YAML files to standard out")
+    parser.add_argument("file", nargs='+', help="YAML file(s) to merge")
+    args = parser.parse_args()
+
+    result = ""
+    for file in args.file:
+        data = yaml.safe_load(open(file, 'r'))
+        result = merge(result, data)
+    yaml.dump(result, sys.stdout)

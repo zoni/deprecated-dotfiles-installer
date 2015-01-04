@@ -1,0 +1,25 @@
+- hosts: local
+  tasks:
+    - include_vars: config.yml
+
+    - name: verify sudo works
+      sudo: yes
+      command: "true"
+      when: sudo_available
+      changed_when: false
+
+    - include: repos.yml
+
+    - name: merge vars
+      shell: >
+        {{ cwd }}/utils/mergeyaml
+        {% for repo in REPOS %}
+        "{{ cwd }}/repos/{{ repo.name }}/vars.yml"
+        {% endfor %}
+        > {{ cwd }}/.vars.yml
+    - include_vars: .vars.yml
+
+    - name: store repo names
+      template:
+        src: repo-names.j2
+        dest: "{{ cwd }}/.repo-names"

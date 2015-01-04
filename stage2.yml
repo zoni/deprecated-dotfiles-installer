@@ -1,0 +1,23 @@
+---
+
+- hosts: local
+  tasks:
+    - include_vars: config.yml
+    - include_vars: "{{ dotfiles }}/tasks.yml"
+    - include_vars: .vars.yml
+
+    - name: pre-commands
+      shell: "{{ item }}"
+      with_items: TASKS.PRE_COMMANDS|default([])
+
+    - include: apt.yml
+      when: ansible_os_family == "Debian" and sudo_available
+
+    - include: dotfiles.yml
+
+    - name: post-commands
+      shell: "{{ item }}"
+      with_items: TASKS.POST_COMMANDS|default([])
+
+  handlers:
+    - include: handlers.yml

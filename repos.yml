@@ -1,0 +1,11 @@
+- file: path="{{ cwd }}/repos" state=directory
+
+- name: check-out repos
+  git:
+    accept_hostkey: "{{ item.accept_hostkey|default('yes') }}"
+    dest: "{{ cwd }}/repos/{{ item.name }}"
+    force: "{{ item.force|default('no') }}"
+    repo: "{{ item.repo }}"
+    update: "{{ update_repos }}"
+    version: "{{ item.version|default('HEAD') }}"
+  with_items: REPOS

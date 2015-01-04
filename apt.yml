@@ -1,0 +1,29 @@
+- name: APT keys
+  sudo: yes
+  apt_key:
+    data: "{{ item.data|default(None) }}"
+    file: "{{ item.file|default(None) }}"
+    id: "{{ item.id|default(None) }}"
+    keyring: "{{ item.keyring|default(None) }}"
+    keyserver: "{{ item.keyserver|default(None) }}"
+    state: "{{ item.state|default('present') }}"
+    url: "{{ item.url|default(None) }}"
+    validate_certs: "{{ item.validate_certs|default(True) }}"
+  with_items: TASKS.APT_KEYS|default([])
+
+- name: APT repositories
+  sudo: yes
+  apt_repository:
+    repo: "{{ item.repo|default(item) }}"
+    state: "{{ item.state|default('present') }}"
+  with_items: TASKS.APT_REPOSITORIES|default([])
+  notify: APT update
+
+- meta: flush_handlers
+
+- name: APT packages
+  sudo: yes
+  apt:
+    pkg: "{{ item[1]|join(',') }}"
+    state: "{{ item[0] }}"
+  with_items: TASKS.APT_PACKAGES|default({})|dictsort
