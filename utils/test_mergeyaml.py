@@ -77,7 +77,13 @@ def test_list_merge():
 def test_str_merge():
     a = "some"
     b = "string"
-    assert mergeyaml.merge(a, b) == a + b
+    assert mergeyaml.merge(a, b) == b
+
+
+def test_int_merge():
+    a = 1
+    b = 2
+    assert mergeyaml.merge(a, b) == b
 
 
 def test_different_types_merge():
